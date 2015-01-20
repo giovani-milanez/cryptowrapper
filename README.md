@@ -98,3 +98,39 @@ int main()
 	}
 }
 ```
+STL
+```C++
+#include "cryptowrapper/Asn1Wrapper.hpp"
+#include <openssl/x509.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+typedef EXPAND_ASN1_PEM_CMP(X509) Certificate;
+
+int main()
+{
+	try
+	{
+		cryptowrapper::ByteArray memoryBa = /* load you cert */;
+		Certificate certificateInMemory = Certificate::fromDerOrPem(memoryBa);
+
+		std::vector<Certificate> certificates
+		{
+			Certificate::fromFile("..."),
+			Certificate::fromFile("..."),
+			certificateInMemory
+		};
+		for(auto& cert : certificates)
+			std::cout << cert->name << std::endl;
+
+		auto it = std::find(certificates.begin(), certificates.end(), certificateInMemory);
+		if(it != certificates.end())
+			std::cout << "Found!" << std::endl << it->getPemEncoded() << std::endl;
+	}
+	catch(const cryptowrapper::Exception& ex)
+	{
+		std::cout << ex.displayText() << std::endl;
+	}
+}
+```
