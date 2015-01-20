@@ -5,7 +5,8 @@ A OpenSSL crypto API wrapper for creating high level classes in C++
 Whenever you use OpenSSL you have to deal with memory management, complex structs initilization and manipulation, 
 resulting in ugly code. It is also hard when you want to use STL over that structs.
 
-This project aim to easy those problems by providing a wrapper mechanism to generate high level classes.
+This project aim to easy those problems by providing a wrapper mechanism to generate high level classes. Examples of
+structs you can possibly wrap: X509, PKCS7, X509_CRL, X509_EXTENSION, ASN1_OBJECT, etc...
 
 Say you want to encapsulate the X509 structure, that represents a digital certificate.
 You could write, using the convenient macro:
