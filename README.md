@@ -86,7 +86,7 @@ int main()
 {
 	try
 	{
-		Certificate cert = Certificate::fromFile("/home/giovani/certificado/cert_giovani_2.cer");
+		Certificate cert = Certificate::fromFile("/path/to/your/certificate.ctr");
 		std::cout << cert.getSubject() << std::endl;
 	}
 	catch(const cryptowrapper::Exception& ex)
