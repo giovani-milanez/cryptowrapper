@@ -17,17 +17,6 @@ the macro is expanded as follow
 typedef Asn1Object<X509, d2i_X509, i2d_X509, X509_free, X509_dup, PEM_write_bio_X509, PEM_read_bio_X509, X509_cmp> Certificate;
 ```
 
-If the struct you are trying to encapsulate does not support comparison function you should use
-```
-EXPAND_ASN1_PEM
-```
-If it does not support PEM write/read functions you should use
-```
-EXPAND_ASN1
-or
-EXPAND_ASN1_CMP (support comparison function)
-```
-
 What you get is a class containing:
  - Static methods for creating a X509* from a file path
  - Static methods for creating a X509* from a DER or PEM encoded certificate
@@ -47,18 +36,26 @@ Basic usage
 ```c++
 #include "cryptowrapper/Asn1Wrapper.hpp"
 #include <openssl/x509.h>
+#include <openssl/pkcs7.h>
 #include <iostream>
 
 typedef EXPAND_ASN1_PEM_CMP(X509) Certificate;
+typedef EXPAND_ASN1_PEM(PKCS7) Pkcs7;
 
 int main()
 {
 	try
 	{
-		Certificate cert = Certificate::fromFile("/home/giovani/certificado/cert_giovani_2.cer");
+		// working with certificate
+		Certificate cert = Certificate::fromFile("/path/to/your/certificate.ctr");
 		std::cout << cert.getPemEncoded() << std::endl;
 		// direct access to X509*
-		std::cout << cert->name << std::endl;		
+		std::cout << cert->name << std::endl;	
+		
+		// working with digital signature
+		Pkcs7 pkcs7 = Pkcs7::fromFile("/path/to/your/signature.p7s");
+        std::cout << pkcs7.getPemEncoded() << std::endl;
+        std::cout << PKCS7_is_detached(pkcs7.internal()) << std::endl;
 	}
 	catch(const cryptowrapper::Exception& ex)
 	{
@@ -133,4 +130,16 @@ int main()
 		std::cout << ex.displayText() << std::endl;
 	}
 }
+```
+## Tips
+
+If the struct you are trying to encapsulate does not support comparison function you should use
+```
+EXPAND_ASN1_PEM
+```
+If it does not support PEM write/read functions you should use
+```
+EXPAND_ASN1
+or
+EXPAND_ASN1_CMP (support comparison function)
 ```
